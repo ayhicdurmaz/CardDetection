@@ -109,10 +109,12 @@ def cardParser(img):
         
 
         symbol = cv2.resize(corner_gray[max(points[3])-25:max(points[3]), min(points[0]): max(points[2])], (28,28))
+        _, tresh_sym = cv2.threshold(symbol, 127,255,cv2.THRESH_BINARY_INV)
         val = cv2.resize(corner_gray[min(points[1]):min(points[1])+50, min(points[0]): max(points[2])], (28,28))
+        _, tresh_val = cv2.threshold(val, 155,255,cv2.THRESH_BINARY_INV)
 
-        cv2.imshow("a", val)
-        cv2.imshow("b", symbol)
+        cv2.imshow("a", tresh_val)
+        cv2.imshow("b", tresh_sym)
         cv2.waitKey(0)
 
 
