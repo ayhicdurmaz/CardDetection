@@ -84,9 +84,8 @@ def getCards(img):
                 cards.append(Card(image_out, points, 0, ''))
 
 
-def cardParser(img):
+def cardParser(img, i):# will delete i
     card_corners = [frame_card[0:75, 0:40], cv2.flip(frame_card[225:300, 0:40], -1), frame_card[0:75, 160:200], cv2.flip(frame_card[225:300, 160:200], -1)]
-    
     for corner in card_corners:
         corner = cv2.resize(corner, (80, 150))
         corner_gray = cv2.cvtColor(corner, cv2.COLOR_BGR2GRAY)
@@ -108,19 +107,20 @@ def cardParser(img):
                 points[3].append(y+h)
         
 
-        symbol = cv2.resize(corner_gray[max(points[3])-25:max(points[3]), min(points[0]): max(points[2])], (28,28))
+        symbol = cv2.resize(corner_gray[max(points[3])-30:max(points[3]), min(points[0]): max(points[2])], (28,28))
         _, tresh_sym = cv2.threshold(symbol, 127,255,cv2.THRESH_BINARY_INV)
         val = cv2.resize(corner_gray[min(points[1]):min(points[1])+50, min(points[0]): max(points[2])], (28,28))
-        _, tresh_val = cv2.threshold(val, 155,255,cv2.THRESH_BINARY_INV)
+        _, tresh_val = cv2.threshold(val, 155,255,cv2.THRESH_BINARY)
 
-        cv2.imshow("a", tresh_val)
-        cv2.imshow("b", tresh_sym)
-        cv2.waitKey(0)
+        cv2.imwrite("val" + str(i) + ".png", tresh_val)
+        print(i)
+        i+=1
+    return i
 
 
-frame = cv2.imread("a.png")
+#frame = cv2.imread("a.png")
 #frame = cv2.imread("WP.jpeg")
-#frame = cv2.imread("WP1.jpeg")
+frame = cv2.imread("missing2.jpeg")
 
 cards = []
 frame_canny = card2Canny(frame)
@@ -132,7 +132,7 @@ i=0
 for card in cards:
     frame_card = card.card_image
 
-    cardParser(frame_card)
+    i = cardParser(frame_card, i)
 
     i+=1
 
